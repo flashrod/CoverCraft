@@ -17,6 +17,8 @@ function App() {
   const [resumeFile, setResumeFile] = useState(null)
   const [why, setWhy] = useState('')
   const [highlight, setHighlight] = useState('')
+  const [tone, setTone] = useState('confident')
+  const [letterLength, setLetterLength] = useState('medium')
   const [letter, setLetter] = useState('')
   const [model, setModel] = useState('')
   const [loading, setLoading] = useState(false)
@@ -37,6 +39,8 @@ function App() {
         resumeFile,
         why,
         highlight,
+        tone,
+        letterLength,
         canGenerate,
         useCredit,
         isSignedIn
@@ -62,6 +66,8 @@ function App() {
     setLetter('')
     setModel('')
     setError('')
+    setTone('confident')
+    setLetterLength('medium')
   }
 
   if (!showApp) {
@@ -104,6 +110,10 @@ function App() {
             canGenerate={canGenerate}
             credits={credits}
             isSignedIn={isSignedIn}
+            tone={tone}
+            setTone={setTone}
+            letterLength={letterLength}
+            setLetterLength={setLetterLength}
           />
         )}
         {step === 'result' && (
@@ -111,6 +121,7 @@ function App() {
             letter={letter}
             onStartOver={handleStartOver}
             model={model}
+            jd={jd}
           />
         )}
       </main>

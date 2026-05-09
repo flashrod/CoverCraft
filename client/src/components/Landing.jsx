@@ -30,7 +30,7 @@ function Landing({ onEnter }) {
     },
     {
       title: 'Credit System',
-      description: 'Two free generations for guests. Unlimited access when you sign in.',
+      description: 'Two free credits for guests. 10 credits per day when you sign in.',
       icon: CreditCard,
       badge: 'yellow'
     }
@@ -92,16 +92,8 @@ function Landing({ onEnter }) {
       {/* Hero Section */}
       <main className="pt-40 pb-28 px-6">
         <div className="max-w-3xl mx-auto text-center">
-          {/* Eyebrow badge */}
-          <div className={`transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-            <Badge variant="secondary" className="px-4 py-1.5 text-[10px] uppercase tracking-[0.2em] font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#111111] mr-2" />
-              Cover Letter Generator
-            </Badge>
-          </div>
-
           {/* Heading */}
-          <h1 className={`mt-8 font-serif text-5xl md:text-6xl lg:text-7xl leading-[1.1] tracking-tight text-[#111111] transition-all duration-700 delay-100 ease-[cubic-bezier(0.16,1,0.3,1)] ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+          <h1 className={`font-serif text-5xl md:text-6xl lg:text-7xl leading-[1.1] tracking-tight text-[#111111] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
             Letters that sound
             <br />
             <span className="text-[#787774]">like you wrote them.</span>
@@ -215,7 +207,7 @@ function Landing({ onEnter }) {
               Ready to get started?
             </h2>
             <p className="mt-4 text-[#787774]">
-              Two free cover letters. No account required.
+              Two free credits. 10 per day when you sign in.
             </p>
             <Button size="lg" onClick={onEnter} className="mt-8 px-8">
               Generate Your Letter

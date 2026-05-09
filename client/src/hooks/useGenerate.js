@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
-export async function generateLetter({ jd, resume, resumeFile, why, highlight, canGenerate, useCredit, isSignedIn }) {
+export async function generateLetter({ jd, resume, resumeFile, why, highlight, tone, letterLength, canGenerate, useCredit, isSignedIn }) {
   if (!canGenerate) {
     throw new Error('No credits remaining')
   }
@@ -11,6 +11,8 @@ export async function generateLetter({ jd, resume, resumeFile, why, highlight, c
   formData.append('jd', jd)
   formData.append('why', why)
   formData.append('highlight', highlight || '')
+  formData.append('tone', tone || 'confident')
+  formData.append('letterLength', letterLength || 'medium')
 
   if (resumeFile) {
     formData.append('resume', resumeFile)

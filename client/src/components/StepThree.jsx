@@ -4,8 +4,23 @@ import { Button } from './ui/button'
 import { Spinner } from './ui/spinner'
 import CreditWall from './CreditWall'
 import { Label } from './ui/label'
+import { Card, CardContent } from './ui/card'
 
-function StepThree({ why, setWhy, highlight, setHighlight, onSubmit, onBack, loading, canGenerate, credits, isSignedIn }) {
+const tones = [
+  { value: 'professional', label: 'Professional', description: 'Formal and polished' },
+  { value: 'confident', label: 'Confident', description: 'Direct and assertive' },
+  { value: 'warm', label: 'Warm', description: 'Human and personable' },
+  { value: 'concise', label: 'Concise', description: 'Short and punchy' },
+  { value: 'enthusiastic', label: 'Enthusiastic', description: 'Energetic and excited' },
+]
+
+const lengths = [
+  { value: 'short', label: 'Short', description: '~150 words' },
+  { value: 'medium', label: 'Medium', description: '~250 words' },
+  { value: 'full', label: 'Full', description: '~400 words' },
+]
+
+function StepThree({ why, setWhy, highlight, setHighlight, onSubmit, onBack, loading, canGenerate, credits, isSignedIn, tone, setTone, letterLength, setLetterLength }) {
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
@@ -50,6 +65,52 @@ function StepThree({ why, setWhy, highlight, setHighlight, onSubmit, onBack, loa
             placeholder="A project, achievement, skill, or experience you want included in your letter..."
             className="min-h-[140px] text-base"
           />
+        </div>
+
+        {/* Tone Selector */}
+        <div className="space-y-3">
+          <Label className="text-[var(--foreground)] text-base font-medium">
+            How should you sound?
+          </Label>
+          <div className="flex flex-wrap gap-2">
+            {tones.map((t) => (
+              <Button
+                key={t.value}
+                variant={tone === t.value ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setTone(t.value)}
+                className="text-sm"
+              >
+                {t.label}
+              </Button>
+            ))}
+          </div>
+          <p className="text-xs text-[var(--muted-foreground)]">
+            {tones.find(t => t.value === tone)?.description}
+          </p>
+        </div>
+
+        {/* Letter Length Selector */}
+        <div className="space-y-3">
+          <Label className="text-[var(--foreground)] text-base font-medium">
+            Letter length
+          </Label>
+          <div className="flex flex-wrap gap-2">
+            {lengths.map((l) => (
+              <Button
+                key={l.value}
+                variant={letterLength === l.value ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setLetterLength(l.value)}
+                className="text-sm"
+              >
+                {l.label}
+              </Button>
+            ))}
+          </div>
+          <p className="text-xs text-[var(--muted-foreground)]">
+            {lengths.find(l => l.value === letterLength)?.description}
+          </p>
         </div>
 
         <div className="flex items-center justify-between pt-4">
