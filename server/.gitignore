@@ -1,0 +1,16 @@
+# Logs
+logs
+*.log
+
+node_modules
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# Editor
+.vscode
+.idea
+.DS_Store
+*.sw?
