@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { Button } from './ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs'
 import { useAuth } from '../context/AuthContext'
 
 export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }) {
   const { login, signup } = useAuth()
-  const [mode, setMode] = useState(defaultMode)
+  const [tab, setTab] = useState(defaultMode)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -16,7 +17,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }) {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    setMode(defaultMode)
+    setTab(defaultMode)
     setError(null)
     setName('')
     setEmail('')
@@ -24,121 +25,145 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }) {
     setPasswordConfirm('')
   }, [defaultMode, isOpen])
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault()
     setError(null)
     setLoading(true)
-
     try {
-      if (mode === 'login') {
-        await login(email, password)
-        onClose()
-      } else {
-        if (password !== passwordConfirm) {
-          setError('Passwords do not match')
-          setLoading(false)
-          return
-        }
-        await signup(name, email, password, passwordConfirm)
-        onClose()
-      }
+      await login(email, password)
+      onClose()
     } catch (err) {
-      setError(err.response?.data?.message || (mode === 'login' ? 'Incorrect email or password' : 'Something went wrong. Please try again.'))
+      setError(err.response?.data?.message || 'Incorrect email or password')
     } finally {
       setLoading(false)
     }
   }
 
-  const toggleMode = () => {
-    setMode(mode === 'login' ? 'signup' : 'login')
+  const handleSignup = async (e) => {
+    e.preventDefault()
     setError(null)
-    setName('')
-    setEmail('')
-    setPassword('')
-    setPasswordConfirm('')
+    if (password !== passwordConfirm) {
+      setError('Passwords do not match')
+      return
+    }
+    setLoading(true)
+    try {
+      await signup(name, email, password, passwordConfirm)
+      onClose()
+    } catch (err) {
+      setError(err.response?.data?.message || 'Something went wrong. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>{mode === 'login' ? 'Sign In' : 'Create Account'}</DialogTitle>
-          <DialogDescription>
-            {mode === 'login' ? 'Welcome back! Please enter your details.' : 'Create an account to start generating.'}
-          </DialogDescription>
+      <DialogContent className="sm:max-w-[425px] p-0 gap-0">
+        <DialogHeader className="px-6 pt-6 pb-0">
+          <DialogTitle className="font-serif text-2xl text-[var(--foreground)]">Welcome</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
-          {mode === 'signup' && (
-            <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
-              <Input
-                id="name"
-                type="text"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="border-[#EAEAEA] rounded-lg font-['Source_Sans_3'] font-normal focus-visible:ring-0 focus-visible:border-[#111111]"
-              />
-            </div>
-          )}
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="border-[#EAEAEA] rounded-lg font-['Source_Sans_3'] font-normal focus-visible:ring-0 focus-visible:border-[#111111]"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              required
-              minLength={mode === 'signup' ? 8 : undefined}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="border-[#EAEAEA] rounded-lg font-['Source_Sans_3'] font-normal focus-visible:ring-0 focus-visible:border-[#111111]"
-            />
-          </div>
-          {mode === 'signup' && (
-            <div className="space-y-2">
-              <Label htmlFor="passwordConfirm">Confirm Password</Label>
-              <Input
-                id="passwordConfirm"
-                type="password"
-                required
-                minLength={8}
-                value={passwordConfirm}
-                onChange={(e) => setPasswordConfirm(e.target.value)}
-                className="border-[#EAEAEA] rounded-lg font-['Source_Sans_3'] font-normal focus-visible:ring-0 focus-visible:border-[#111111]"
-              />
-            </div>
-          )}
 
-          {error && (
-            <p className="text-[#DC2626] font-['Source_Sans_3'] font-normal text-[13px]">
-              {error}
-            </p>
-          )}
+        <Tabs value={tab} onValueChange={setTab} className="px-6 py-4">
+          <TabsList className="w-full bg-[var(--secondary)] p-1 rounded-xl">
+            <TabsTrigger value="login" className="flex-1 rounded-lg data-[state=active]:bg-[var(--card)] data-[state=active]:shadow-sm">Sign In</TabsTrigger>
+            <TabsTrigger value="signup" className="flex-1 rounded-lg data-[state=active]:bg-[var(--card)] data-[state=active]:shadow-sm">Create Account</TabsTrigger>
+          </TabsList>
 
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Please wait...' : (mode === 'login' ? 'Sign In' : 'Create Account')}
-          </Button>
+          <TabsContent value="login" className="mt-6 space-y-4">
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="login-email" className="text-sm font-medium">Email</Label>
+                <Input
+                  id="login-email"
+                  type="email"
+                  placeholder="you@example.com"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="rounded-lg"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="login-password" className="text-sm font-medium">Password</Label>
+                <Input
+                  id="login-password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="rounded-lg"
+                />
+              </div>
+              {error && (
+                <p className="text-[#DC2626] text-sm">{error}</p>
+              )}
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? 'Signing in...' : 'Sign In'}
+              </Button>
+            </form>
+          </TabsContent>
 
-          <div className="text-center mt-4">
-            <button
-              type="button"
-              onClick={toggleMode}
-              className="text-[13px] font-['Source_Sans_3'] text-muted-foreground hover:text-foreground"
-            >
-              {mode === 'login' ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
-            </button>
-          </div>
-        </form>
+          <TabsContent value="signup" className="mt-6 space-y-4">
+            <form onSubmit={handleSignup} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="signup-name" className="text-sm font-medium">Full Name</Label>
+                <Input
+                  id="signup-name"
+                  type="text"
+                  placeholder="John Doe"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="rounded-lg"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="signup-email" className="text-sm font-medium">Email</Label>
+                <Input
+                  id="signup-email"
+                  type="email"
+                  placeholder="you@example.com"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="rounded-lg"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="signup-password" className="text-sm font-medium">Password</Label>
+                <Input
+                  id="signup-password"
+                  type="password"
+                  required
+                  minLength={8}
+                  placeholder="Min. 8 characters"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="rounded-lg"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="signup-confirm" className="text-sm font-medium">Confirm Password</Label>
+                <Input
+                  id="signup-confirm"
+                  type="password"
+                  required
+                  minLength={8}
+                  value={passwordConfirm}
+                  onChange={(e) => setPasswordConfirm(e.target.value)}
+                  className="rounded-lg"
+                />
+              </div>
+              {error && (
+                <p className="text-[#DC2626] text-sm">{error}</p>
+              )}
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? 'Creating account...' : 'Create Account'}
+              </Button>
+            </form>
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   )
