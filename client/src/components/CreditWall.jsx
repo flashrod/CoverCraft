@@ -1,45 +1,54 @@
+import { useEffect, useState } from 'react'
 import { Lock } from 'lucide-react'
 import { SignInButton, SignUpButton } from '@clerk/clerk-react'
 import { Button } from './ui/button'
-import { Card, CardContent } from './ui/card'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/dialog'
 
 function CreditWall() {
+  const [isVisible, setIsVisible] = useState(false)
+
+  useEffect(() => {
+    setIsVisible(true)
+  }, [])
+
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      <Card className="shadow-md">
-        <CardContent className="p-8 text-center">
-          <div className="flex justify-center mb-4">
-            <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
-              <Lock className="w-6 h-6 text-gray-500" />
+    <div className={`w-full max-w-lg mx-auto transition-all duration-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+      <Dialog open={true} onOpenChange={() => {}}>
+        <DialogContent className="sm:max-w-md text-center">
+          <div className="flex flex-col items-center">
+            <div className="w-16 h-16 rounded-full bg-[var(--secondary)] flex items-center justify-center mb-5">
+              <Lock className="w-7 h-7 text-[var(--accent)]" />
             </div>
+
+            <DialogHeader>
+              <DialogTitle className="font-serif text-2xl text-[var(--foreground)]">
+                You've used your free credits
+              </DialogTitle>
+              <DialogDescription className="text-[var(--muted-foreground)] mt-2">
+                Sign in to generate unlimited cover letters — free forever
+              </DialogDescription>
+            </DialogHeader>
+
+            <DialogFooter className="flex flex-col gap-3 w-full mt-6">
+              <SignInButton mode="modal">
+                <Button size="lg" className="w-full">
+                  Sign in with Google
+                </Button>
+              </SignInButton>
+
+              <SignUpButton mode="modal">
+                <Button variant="ghost" size="lg" className="w-full">
+                  Create a free account
+                </Button>
+              </SignUpButton>
+            </DialogFooter>
+
+            <p className="text-xs text-[var(--muted-foreground)] mt-6">
+              Free forever. No credit card needed.
+            </p>
           </div>
-
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">
-            You've used your free credits
-          </h2>
-          <p className="text-gray-500 mb-6">
-            Sign in to generate unlimited cover letters for free
-          </p>
-
-          <div className="space-y-3">
-            <SignInButton mode="modal">
-              <Button className="w-full">
-                Sign in with Google
-              </Button>
-            </SignInButton>
-
-            <SignUpButton mode="modal">
-              <Button variant="outline" className="w-full">
-                Or create a free account
-              </Button>
-            </SignUpButton>
-          </div>
-
-          <p className="text-sm text-gray-400 mt-6">
-            Free forever. No credit card needed.
-          </p>
-        </CardContent>
-      </Card>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
