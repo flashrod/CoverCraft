@@ -5,7 +5,7 @@ const LetterSchema = new mongoose.Schema({
   jd: { type: String, required: true },
   resumeText: { type: String, required: true },
   why: { type: String, required: true },
-  highlight: { type: String, required: true },
+  highlight: { type: String, default: '' },
   generatedLetter: { type: String, required: true },
   model: { type: String, required: true },
   createdAt: { type: Date, default: Date.now }
