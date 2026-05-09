@@ -1,5 +1,4 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
-import groq from 'groq'
 
 const TONE_DESCRIPTIONS = {
   professional: 'formal, polished, traditional vocabulary, business-appropriate',
@@ -55,8 +54,8 @@ Write a cover letter following these strict rules:
 
 function buildRegeneratePrompt({ jd, resume, why, highlight, tone, letterLength, paragraph, instruction }) {
   const toneDesc = TONE_DESCRIPTIONS[tone] || TONE_DESCRIPTIONS.confident
-  const instructionText = instruction === 'concise' 
-    ? 'Make this paragraph more concise and punchy while keeping the key message.' 
+  const instructionText = instruction === 'concise'
+    ? 'Make this paragraph more concise and punchy while keeping the key message.'
     : 'Rewrite this paragraph to better match the overall tone and style.'
 
   return `You are an expert career coach and professional writer.
@@ -87,14 +86,25 @@ export async function callGemini(prompt) {
 }
 
 export async function callGroq(prompt) {
-  const client = groq({ apiKey: process.env.GROQ_API_KEY })
-  const completion = await client.chat.completions.create({
-    model: 'llama-3.3-70b-versatile',
-    messages: [{ role: 'user', content: prompt }],
-    max_tokens: 1000,
-    temperature: 0.7
+  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: 'llama-3.3-70b-versatile',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 1000,
+      temperature: 0.7
+    })
   })
-  return completion.choices[0].message.content
+  if (!response.ok) {
+    const err = await response.text()
+    throw new Error(`Groq API error: ${response.status} - ${err}`)
+  }
+  const data = await response.json()
+  return data.choices[0].message.content
 }
 
 export async function generateCoverLetter(payload) {
