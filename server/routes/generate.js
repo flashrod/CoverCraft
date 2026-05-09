@@ -3,10 +3,11 @@ import uploadMiddleware from '../middleware/upload.js'
 import { parsePDF } from '../services/pdfParser.js'
 import { generateCoverLetter, regenerateParagraph } from '../services/aiService.js'
 import Letter from '../models/Letter.js'
+import { optionalAuth } from '../middleware/protect.js'
 
 const router = express.Router()
 
-router.post('/generate', uploadMiddleware.single('resume'), async (req, res) => {
+router.post('/generate', optionalAuth, uploadMiddleware.single('resume'), async (req, res) => {
   try {
     const { jd, why, highlight, resumeText, tone, letterLength } = req.body
     let resume = ''
@@ -37,6 +38,7 @@ router.post('/generate', uploadMiddleware.single('resume'), async (req, res) => 
     })
 
     await Letter.create({
+      userId: req.user ? req.user._id : null,
       jd,
       resumeText: resume,
       why,

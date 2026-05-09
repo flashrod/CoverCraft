@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useUser } from '@clerk/clerk-react'
+import { useAuth } from '../context/AuthContext'
 
 const CREDIT_KEY = 'covercraft_credits'
 const SIGNED_IN_CREDIT_KEY = 'covercraft_signed_credits'
@@ -8,12 +8,12 @@ const INITIAL_CREDITS = 2
 const SIGNED_IN_DAILY_CREDITS = 10
 
 export function useCredits() {
-  const { user, isLoaded: isUserLoaded } = useUser()
+  const { user, loading, isSignedIn } = useAuth()
   const [credits, setCredits] = useState(INITIAL_CREDITS)
 
   useEffect(() => {
-    const isSignedIn = isUserLoaded && !!user
-    
+    if (loading) return
+
     if (isSignedIn) {
       const today = new Date().toDateString()
       const storedDate = localStorage.getItem(SIGNED_IN_DATE_KEY)
@@ -35,10 +35,9 @@ export function useCredits() {
         setCredits(parseInt(stored, 10))
       }
     }
-  }, [user, isUserLoaded])
+  }, [user, isSignedIn, loading])
 
   const useCredit = () => {
-    const isSignedIn = isUserLoaded && !!user
     const newCredits = Math.max(0, credits - 1)
     setCredits(newCredits)
     
@@ -49,9 +48,8 @@ export function useCredits() {
     }
   }
 
-  const isSignedIn = isUserLoaded && !!user
   const hasCredits = credits > 0
-  const canGenerate = hasCredits
+  const canGenerate = isSignedIn || hasCredits
 
   return {
     credits,

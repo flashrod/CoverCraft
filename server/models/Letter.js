@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 
 const LetterSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
   jd: { type: String, required: true },
   resumeText: { type: String, required: true },
   why: { type: String, required: true },
