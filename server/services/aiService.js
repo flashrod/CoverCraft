@@ -109,30 +109,19 @@ export async function callGroq(prompt) {
 
 export async function generateCoverLetter(payload) {
   try {
-    const result = await callGemini(buildPrompt(payload))
-    return { letter: result, model: 'gemini' }
+    const result = await callGroq(buildPrompt(payload))
+    return { letter: result, model: 'groq' }
   } catch (error) {
-    console.error('Gemini error:', error.message)
-    try {
-      const result = await callGroq(buildPrompt(payload))
-      return { letter: result, model: 'groq' }
-    } catch (groqError) {
-      console.error('Groq error:', groqError.message)
-      throw new Error('Failed to generate cover letter. Please try again.')
-    }
+    console.error('Groq error:', error.message)
+    throw new Error('Failed to generate cover letter. Please try again.')
   }
 }
 
 export async function regenerateParagraph(payload) {
   try {
-    return await callGemini(buildRegeneratePrompt(payload))
+    return await callGroq(buildRegeneratePrompt(payload))
   } catch (error) {
-    console.error('Gemini regenerate error:', error.message)
-    try {
-      return await callGroq(buildRegeneratePrompt(payload))
-    } catch (groqError) {
-      console.error('Groq regenerate error:', groqError.message)
-      throw new Error('Failed to regenerate paragraph. Please try again.')
-    }
+    console.error('Groq regenerate error:', error.message)
+    throw new Error('Failed to regenerate paragraph. Please try again.')
   }
 }
