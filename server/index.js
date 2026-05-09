@@ -13,7 +13,8 @@ const app = express()
 app.use(cors({
   origin: [
     'http://localhost:5173',
-    'https://thecovercraft.vercel.app'
+    'https://thecovercraft.vercel.app',
+    'https://covercraft-qij5.onrender.com'
   ],
   credentials: true
 }))
