@@ -1,8 +1,13 @@
 import { Textarea } from './ui/textarea'
 import { Button } from './ui/button'
 import { Spinner } from './ui/spinner'
+import CreditWall from './CreditWall'
 
-function StepThree({ why, setWhy, highlight, setHighlight, onSubmit, onBack, loading }) {
+function StepThree({ why, setWhy, highlight, setHighlight, onSubmit, onBack, loading, canGenerate, credits, isSignedIn }) {
+  if (!canGenerate) {
+    return <CreditWall />
+  }
+
   return (
     <div className="w-full max-w-2xl mx-auto">
       <div className="text-center mb-8">
@@ -48,6 +53,12 @@ function StepThree({ why, setWhy, highlight, setHighlight, onSubmit, onBack, loa
             )}
           </Button>
         </div>
+
+        {!isSignedIn && (
+          <p className="text-center text-sm text-gray-400">
+            You have {credits} free generation{credits !== 1 ? 's' : ''} remaining
+          </p>
+        )}
       </div>
     </div>
   )

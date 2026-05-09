@@ -51,7 +51,16 @@ Create a `.env` file in the `client/` directory:
 
 ```
 VITE_API_URL=http://localhost:5000
+VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
 ```
+
+#### Setting up Clerk Authentication
+
+1. Go to [clerk.com](https://clerk.com) and create a free account
+2. Create a new application
+3. Enable Google as a sign-in provider (one toggle)
+4. Copy the Publishable Key from the Clerk dashboard
+5. Add it to `client/.env` as `VITE_CLERK_PUBLISHABLE_KEY`
 
 ## Running the Application
 
@@ -81,13 +90,15 @@ The client will run on `http://localhost:5173`.
 - **AI Generation**: Uses Gemini 2.5 Flash with Groq Llama 3.3 as automatic fallback
 - **Copy to Clipboard**: One-click copy of the generated letter
 - **MongoDB Storage**: All generated letters are saved for reference
+- **Credit System**: Guest users get 2 free generations, signed-in users get unlimited
 
 ## Tech Stack
 
-- **Frontend**: React, Vite, Tailwind CSS, shadcn/ui, Axios
+- **Frontend**: React, Vite, Tailwind CSS, shadcn/ui, Axios, Clerk
 - **Backend**: Node.js, Express.js, Multer, pdf-parse
 - **Database**: MongoDB (Mongoose)
 - **AI**: Google Gemini 2.5 Flash, Groq Llama 3.3
+- **Auth**: Clerk (Google sign-in, credit system)
 
 ## Project Structure
 

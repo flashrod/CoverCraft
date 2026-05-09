@@ -6,6 +6,7 @@ import StepTwo from './components/StepTwo'
 import StepThree from './components/StepThree'
 import LetterOutput from './components/LetterOutput'
 import { generateLetter } from './hooks/useGenerate'
+import { useCredits } from './hooks/useCredits'
 
 function App() {
   const [step, setStep] = useState(1)
@@ -19,6 +20,8 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
+  const { credits, useCredit, canGenerate, isSignedIn } = useCredits()
+
   const handleNext = () => setStep((s) => s + 1)
   const handleBack = () => setStep((s) => s - 1)
 
@@ -31,13 +34,17 @@ function App() {
         resume,
         resumeFile,
         why,
-        highlight
+        highlight,
+        canGenerate,
+        useCredit,
+        isSignedIn
       })
       setLetter(result.letter)
       setModel(result.model)
       setStep('result')
     } catch (err) {
-      setError(err.response?.data?.error || 'Something went wrong generating your letter. Please try again.')
+      const message = err.response?.data?.error || err.message || 'Something went wrong generating your letter. Please try again.'
+      setError(message)
     } finally {
       setLoading(false)
     }
@@ -57,7 +64,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      <Navbar credits={credits} canGenerate={canGenerate} />
 
       {step !== 'result' && <ProgressBar currentStep={step} />}
 
@@ -88,6 +95,9 @@ function App() {
             onSubmit={handleSubmit}
             onBack={handleBack}
             loading={loading}
+            canGenerate={canGenerate}
+            credits={credits}
+            isSignedIn={isSignedIn}
           />
         )}
         {step === 'result' && (
