@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5005'
 
 export async function generateLetter({ jd, resume, resumeFile, why, highlight, tone, letterLength, canGenerate, useCredit, isSignedIn }) {
   if (!canGenerate) {
@@ -23,7 +23,8 @@ export async function generateLetter({ jd, resume, resumeFile, why, highlight, t
   const response = await axios.post(`${API_URL}/api/generate`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data'
-    }
+    },
+    withCredentials: true
   })
 
   if (!isSignedIn && useCredit) {

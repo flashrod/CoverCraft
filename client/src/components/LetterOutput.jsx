@@ -7,7 +7,7 @@ import { Separator } from './ui/separator'
 import { Progress } from './ui/progress'
 import axios from 'axios'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5005'
 
 const STOP_WORDS = new Set([
   'the', 'that', 'with', 'this', 'from', 'have', 'will', 'been', 'were', 'they',
@@ -152,7 +152,7 @@ function LetterOutput({ letter, onStartOver, model, jd }) {
         letterLength: 'medium',
         paragraph: paragraphs[index],
         instruction
-      })
+      }, { withCredentials: true })
       
       const newParagraphs = [...paragraphs]
       newParagraphs[index] = response.data.paragraph
