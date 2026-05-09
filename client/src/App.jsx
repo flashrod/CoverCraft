@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Landing from './components/Landing'
 import Navbar from './components/Navbar'
 import ProgressBar from './components/ProgressBar'
 import StepOne from './components/StepOne'
@@ -9,6 +10,7 @@ import { generateLetter } from './hooks/useGenerate'
 import { useCredits } from './hooks/useCredits'
 
 function App() {
+  const [showApp, setShowApp] = useState(false)
   const [step, setStep] = useState(1)
   const [jd, setJd] = useState('')
   const [resume, setResume] = useState('')
@@ -62,15 +64,19 @@ function App() {
     setError('')
   }
 
+  if (!showApp) {
+    return <Landing onEnter={() => setShowApp(true)} />
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#F7F6F3]">
       <Navbar credits={credits} canGenerate={canGenerate} />
 
       {step !== 'result' && <ProgressBar currentStep={step} />}
 
-      <main className="max-w-3xl mx-auto px-6 py-8">
+      <main className="max-w-2xl mx-auto px-6 py-8">
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+          <div className="mb-6 p-4 bg-[#FDEBEC] border border-[#EAEAEA] rounded-lg text-[#9F2F2D] text-sm">
             {error}
           </div>
         )}
